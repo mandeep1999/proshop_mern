@@ -17,7 +17,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
 
   if (orderItems && orderItems.length === 0) {
     res.status(400);
-    throw new Error('No oder Items');
+    throw new Error('No order Items');
   } else {
     const order = new Order({
       orderItems,
@@ -48,7 +48,7 @@ const getOrderById = asyncHandler(async (req, res) => {
     res.json(order);
   } else {
     res.status(404);
-    throw new Error('Order no found');
+    throw new Error('Order not found');
   }
 });
 
@@ -72,8 +72,17 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
     res.json(updateOrder);
   } else {
     res.status(404);
-    throw new Error('Order no found');
+    throw new Error('Order not found');
   }
 });
 
-export { addOrderItems, getOrderById, updateOrderToPaid };
+// @desc get logged in users orders
+// @route get /api/orders/myorders
+// @access Private
+const getMyOrders = asyncHandler(async (req, res) => {
+  //to get additional details of user of the order with 2nd paramters indicating the fields needed
+  const orders = await Order.find({ user: req.user._id });
+  res.json(orders);
+});
+
+export { addOrderItems, getOrderById, getMyOrders, updateOrderToPaid };
