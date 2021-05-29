@@ -5,14 +5,14 @@ import Product from '../models/productModel.js';
 // @route   GET /api/products
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
-  const pageSize = 10;
+  const pageSize = 10; //how many products per page you want
   const page = Number(req.query.pageNumber) || 1;
-
+  //req.query for getting the query in string url
   const keyword = req.query.keyword
     ? {
         name: {
           $regex: req.query.keyword,
-          $options: 'i',
+          $options: 'i', //for case insesitive
         },
       }
     : {};
@@ -20,7 +20,7 @@ const getProducts = asyncHandler(async (req, res) => {
   const count = await Product.countDocuments({ ...keyword });
   const products = await Product.find({ ...keyword })
     .limit(pageSize)
-    .skip(pageSize * (page - 1));
+    .skip(pageSize * (page - 1)); //to get diffrent products on differnt pages
 
   res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
